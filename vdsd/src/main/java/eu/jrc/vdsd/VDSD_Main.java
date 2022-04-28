@@ -11,8 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import com.fazecast.jSerialComm.SerialPort;
 
-
-public class VDSD_Main extends JFrame
+public class VDSD_Main extends JFrame implements VDSD_ScannerListener_ReadComplete, ActionListener
 {
 //https://www.youtube.com/watch?v=Q8beQ6xW0s0
 	private static final long serialVersionUID = 1L;
@@ -52,19 +51,28 @@ public class VDSD_Main extends JFrame
             portList.addItem(portNames[i].getSystemPortName());
         
         JButton connectButton = new JButton("Connect");
-        connectButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				scannerComPort = portNames[portList.getSelectedIndex()];
-				scannerComPort.openPort();
-				VDSD_ScannerListener scannerListener = new VDSD_ScannerListener(); 
-				scannerComPort.addDataListener(scannerListener);
-				;
-			}
-		});
+        connectButton.addActionListener(this);
         topPanel.add(connectButton);    
         topPanel.add(portList);
         
         add(topPanel,BorderLayout.NORTH);
         
+	}
+
+
+	public void processFinish(byte[] output) {
+		String rawbarcode = VDSD_Utils.encodeHexString(output);
+		
+	}
+
+
+	public void actionPerformed(ActionEvent e) {
+		
+		scannerComPort = portNames[portList.getSelectedIndex()];
+		scannerComPort.openPort();
+		VDSD_ScannerListener scannerListener = new VDSD_ScannerListener(); 
+		scannerListener.delegate = this;
+		scannerComPort.addDataListener(scannerListener);
+		
 	}
 }

@@ -4,6 +4,8 @@ import com.fazecast.jSerialComm.*;
 
 public class VDSD_ScannerListener  implements SerialPortDataListener{
 
+	public VDSD_ScannerListener_ReadComplete delegate = null;
+	
 	public int getListeningEvents() {
 		return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; 
 	}
@@ -11,8 +13,8 @@ public class VDSD_ScannerListener  implements SerialPortDataListener{
 	public void serialEvent(SerialPortEvent event) {
 		byte[] buffer = new byte[event.getSerialPort().bytesAvailable()];
         event.getSerialPort().readBytes(buffer, buffer.length);
-        String rawbarcode = VDSD_Utils.encodeHexString(buffer);
-		
+        
+        delegate.processFinish(buffer);
 	}
 
 }
