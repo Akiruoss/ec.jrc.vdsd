@@ -4,7 +4,7 @@ import com.fazecast.jSerialComm.*;
 
 public class VDSD_ScannerListener  implements SerialPortDataListener{
 
-	public VDSD_ScannerListener_ReadComplete delegate = null;
+	public VDSD_ScannerListener_Delegate delegate = null;
 	
 	public int getListeningEvents() {
 		return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; 

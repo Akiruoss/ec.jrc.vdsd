@@ -1,5 +1,5 @@
 package eu.jrc.vdsd;
 
-interface VDSD_ScannerListener_ReadComplete {
+public interface VDSD_CRT_Delegate {
 	void processFinish(byte[] output);
 }

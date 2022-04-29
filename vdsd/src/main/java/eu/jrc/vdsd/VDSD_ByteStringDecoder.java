@@ -346,6 +346,7 @@ public class VDSD_ByteStringDecoder
 
 					barcode.isValid = true;
 					long dbStartTime = System.nanoTime();
+/*					
 					VDSD_DBHelper db = VDSD_DBHelper.getIstance();
 
 					//NORMAL CODE
@@ -371,7 +372,8 @@ public class VDSD_ByteStringDecoder
 					long dbEndTime = System.nanoTime();
 					barcode.dbLookUp = (dbEndTime - dbStartTime);
 					long certStartTime = System.nanoTime();
-					if (certFile != null) {
+					if (certFile != null) 
+					{
 
 						VDSD_Cert cert = VDSD_Utils.loadCertificate(certFile);
 						String str = cert.x509Cert.getSigAlgName();
@@ -396,9 +398,10 @@ public class VDSD_ByteStringDecoder
 						}
 
 					}
+					
 					long certEndTime = System.nanoTime();
 					barcode.signatureVerification = (certEndTime - certStartTime);
-
+*/
 					//END NORMAL CODE
 
 				} else {
@@ -424,7 +427,7 @@ public class VDSD_ByteStringDecoder
 			return barcode;
 		}
 
-		return barcode;
+		//return barcode;
 	}
 
 
