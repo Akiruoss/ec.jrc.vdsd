@@ -1,43 +1,100 @@
 package eu.jrc.vdsd;
 
+import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
+
+import eu.jrc.vdsd.VDSD_CRL_Controller.VDSD_CRL_ACTION;
+import eu.jrc.vdsd.VDSD_CRT_Controller.VDSD_CRT_ACTION;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
-public class VDSD_CRL_View extends JFrame implements ActionListener{
+public class VDSD_CRL_View extends JFrame implements ActionListener, VDSD_CRL_Delegate{
 
 	public VDSD_CRL_View() {
 		
 		getContentPane().setLayout(null);
-		JLabel lblTitle = new JLabel("2D Barcode Generation");
-		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblTitle.setBounds(20, 20, 540, 50);
-		getContentPane().add(lblTitle);
+		setBounds(10, 80, 800, 730);
 
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(10, 80, 600, 500);
+		JPanel certPanel = new JPanel();
+		certPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		certPanel.setBounds(10, 11, 250, 640);
+		getContentPane().add(certPanel);
+
+		JPanel infoPanel = new JPanel();
+		infoPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		infoPanel.setBounds(270, 11, 500, 640);
+		getContentPane().add(infoPanel);
+
+		JTextArea certInfoArea = new JTextArea();
+		infoPanel.add(certInfoArea);
+
+
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+
+		JButton btnAddCertDir = new JButton("Add CRLs");
+		btnAddCertDir.addActionListener(this);
+		btnAddCertDir.setActionCommand("add");		
+		menuBar.add(btnAddCertDir);
+
+		JButton btnDelCertFile = new JButton("Del CRLs database");
+		btnDelCertFile.addActionListener(this);
+		btnDelCertFile.setActionCommand("del");
+		menuBar.add(btnDelCertFile);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) 
+	{
 		String actionCommand = e.getActionCommand();
-
-
 		switch (actionCommand) {
-		case "connect": 
+		case "add":
 
-		case "CRT": 
+			try {
+				JFileChooser dir = new JFileChooser(new File(VDSD_Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+				// file.setCurrentDirectory(new File(System.getProperty("user.home")));
+				dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int result = dir.showSaveDialog(null);
 
+				if (result == JFileChooser.APPROVE_OPTION) {
+					File selectedDir = dir.getSelectedFile();				
+					VDSD_CRL_Controller controller = new VDSD_CRL_Controller();
+					controller.setPath(selectedDir);
+					controller.setAction(VDSD_CRL_ACTION.CREATE);
+					controller.setDelegate(this);
+					controller.execute();
+				}
+			} 		
+			catch (Exception  ex)
+			{
+
+			}
 			break;
-		case "CRL": 
-
+		case "del": 
+			VDSD_CRL_Controller controller = new VDSD_CRL_Controller();			
+			controller.setAction(VDSD_CRL_ACTION.DELETE);
+			controller.setDelegate(this);
+			controller.execute();
 			break;
 
-		}	
+		}
+
+	}
+
+	@Override
+	public void processFinishCRL(VDSD_CRL_Map output) {
+		// TODO Auto-generated method stub
 		
 	}
 }

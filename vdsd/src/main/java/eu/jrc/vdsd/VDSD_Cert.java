@@ -1,11 +1,13 @@
 package eu.jrc.vdsd;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -15,7 +17,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
-public class VDSD_Cert {
+public class VDSD_Cert implements Serializable{
 	public String issuer = "";
 	public String subject = "";
 	public String issueDate = "";
@@ -30,10 +32,12 @@ public class VDSD_Cert {
 	public String notAfter = "";
 	public String fingerprint = "";
 	public X509Certificate x509Cert = null;
+	public String base64 = "";
 
 	public VDSD_Cert(String _c, String _cn, String _serial, X509Certificate _x509Cert)
 	{
 		try {
+			base64 = Base64.getEncoder().encodeToString(_x509Cert.getEncoded());
 			C = _c;
 			CN = _cn;
 			x509Cert = _x509Cert;
@@ -81,7 +85,7 @@ public class VDSD_Cert {
 	public  VDSD_Cert(X509Certificate _x509Cert)
 	{
 		try {
-
+			base64 = Base64.getEncoder().encodeToString(_x509Cert.getEncoded());
 			x509Cert =_x509Cert;
 
 			X500Name x500nameS = new JcaX509CertificateHolder(x509Cert).getSubject();

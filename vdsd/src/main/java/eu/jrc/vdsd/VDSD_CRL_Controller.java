@@ -1,27 +1,27 @@
 package eu.jrc.vdsd;
 
-import javax.swing.JFrame;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
+import java.security.cert.X509Certificate;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.SwingWorker;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.concurrent.ExecutionException;
+import eu.jrc.vdsd.VDSD_CRT_Controller.VDSD_CRT_ACTION;
 
-public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
-
+public class VDSD_CRL_Controller  extends SwingWorker<VDSD_CRL_Map, String> {
 	File path = null;
 	Object delegate = null;
-	VDSD_CRT_ACTION ACTION;
+	VDSD_CRL_ACTION ACTION;
 
-	public enum VDSD_CRT_ACTION
+	public enum VDSD_CRL_ACTION
 	{
 		CREATE, DELETE, LOAD
 	}
@@ -34,21 +34,21 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 		this.path = path;
 	}
 
-	public void setAction(VDSD_CRT_ACTION action) {
+	public void setAction(VDSD_CRL_ACTION action) {
 		this.ACTION = action;
 	}
 
-	public VDSD_CRT_Controller()
+	public VDSD_CRL_Controller()
 	{
 
 	}
 
-	public VDSD_CRT_Controller(String _path)
+	public VDSD_CRL_Controller(String _path)
 	{
 
 	}
 
-	public VDSD_CRT_Controller(String _path, VDSD_CRT_Controller _delegate)
+	public VDSD_CRL_Controller(String _path, VDSD_CRT_Controller _delegate)
 	{
 
 	}
@@ -59,15 +59,15 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 	}
 
 	@Override
-	protected VDSD_CRT_Map doInBackground() throws Exception 
+	protected VDSD_CRL_Map doInBackground() throws Exception 
 	{			
 
 
 		String appPath = VDSD_Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-		String crt_mapFilename = "VDS_CRT_MAP.dat";
-		VDSD_CRT_Map CRT_MAP = new VDSD_CRT_Map();
+		String crl_mapFilename = "VDS_CRL_MAP.dat";
+		VDSD_CRL_Map CRL_MAP = new VDSD_CRL_Map();
 
-		if (ACTION == VDSD_CRT_ACTION.CREATE)
+		if (ACTION == VDSD_CRL_ACTION.CREATE)
 		{
 			if (delegate == null || !path.exists() || !path.isDirectory())
 			{
@@ -80,34 +80,34 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 					System.out.println(fileEntry.getName());
 
 					CertificateFactory cf = CertificateFactory.getInstance("X.509", new BouncyCastleProvider());				
-					X509Certificate cert = (X509Certificate) cf.generateCertificate(new FileInputStream(fileEntry));	
+					X509CRL crl = (X509CRL) cf.generateCRL(new FileInputStream(fileEntry));	
 
-					if (cert != null)
-						CRT_MAP.addCRT(cert);
+					if (crl != null)
+						CRL_MAP.addCRL(crl);
 				}	
 			}
 			try {
 
-				FileOutputStream fileOut = new FileOutputStream(appPath + File.separator + crt_mapFilename);
+				FileOutputStream fileOut = new FileOutputStream(appPath + File.separator + crl_mapFilename);
 				ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-				objectOut.writeObject(CRT_MAP);
+				objectOut.writeObject(CRL_MAP);
 				objectOut.flush();
 				System.out.println("CRT_MAP Saved");
 
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-			return CRT_MAP;
+			return CRL_MAP;
 		}
-		if (ACTION == VDSD_CRT_ACTION.DELETE)
+		if (ACTION == VDSD_CRL_ACTION.DELETE)
 		{
 			if (delegate == null)			
 				return null;
 
-			File f = new File(appPath + File.separator + crt_mapFilename);
+			File f = new File(appPath + File.separator + crl_mapFilename);
 			if (f.exists())
 			{
-				File fileCRT = new File(appPath + File.separator + crt_mapFilename);
+				File fileCRT = new File(appPath + File.separator + crl_mapFilename);
 				fileCRT.delete();
 				if (fileCRT.delete()) { 
 					System.out.println("Deleted the file: " + fileCRT.getName());
@@ -118,19 +118,19 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 			} 
 			return null;
 		}
-		if (ACTION == VDSD_CRT_ACTION.LOAD)
+		if (ACTION == VDSD_CRL_ACTION.LOAD)
 		{
 			if (delegate == null)			
 				return null;
-			File f = new File(appPath + File.separator + crt_mapFilename);
+			File f = new File(appPath + File.separator + crl_mapFilename);
 			if (f.exists())
 			{
-				FileInputStream file = new FileInputStream(appPath + File.separator + crt_mapFilename);
+				FileInputStream file = new FileInputStream(appPath + File.separator + crl_mapFilename);
 				ObjectInputStream in = new ObjectInputStream(file);             
-				CRT_MAP = (VDSD_CRT_Map)in.readObject();              
+				CRL_MAP = (VDSD_CRL_Map)in.readObject();              
 				in.close();
 				file.close();
-				return CRT_MAP;
+				return CRL_MAP;
 			}
 			return null;
 		}
@@ -141,11 +141,11 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
     protected void done() {
     	
     	try {
-			VDSD_CRT_Map CRT_MAP = get();
+			VDSD_CRL_Map CRL_MAP = get();
 			if (delegate instanceof VDSD_Main) 
-				((VDSD_Main) delegate).processFinishCRT(CRT_MAP);
+				((VDSD_Main) delegate).processFinishCRL(CRL_MAP);
 			if (delegate instanceof VDSD_CRT_View) 
-				((VDSD_CRT_View) delegate).processFinishCRT(CRT_MAP);
+				((VDSD_CRL_View) delegate).processFinishCRL(CRL_MAP);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -155,6 +155,4 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 		}
     	
     }
-    
-
 }

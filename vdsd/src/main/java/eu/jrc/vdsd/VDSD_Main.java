@@ -14,7 +14,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import com.fazecast.jSerialComm.SerialPort;
 
-public class VDSD_Main extends JFrame implements VDSD_ScannerListener_Delegate, ActionListener
+import eu.jrc.vdsd.VDSD_CRT_Controller.VDSD_CRT_ACTION;
+
+public class VDSD_Main extends JFrame implements VDSD_ScannerListener_Delegate, ActionListener, VDSD_CRT_Delegate, VDSD_CRL_Delegate
 {
 	//https://www.youtube.com/watch?v=Q8beQ6xW0s0
 	private static final long serialVersionUID = 1L;
@@ -22,6 +24,7 @@ public class VDSD_Main extends JFrame implements VDSD_ScannerListener_Delegate, 
 	static JComboBox<String> portList;
 	static SerialPort[] portNames;
 	public static SerialPort scannerComPort;
+	VDSD_CRT_Container CRT_Container;
 
 	public static void main( String[] args )
 	{
@@ -77,13 +80,31 @@ public class VDSD_Main extends JFrame implements VDSD_ScannerListener_Delegate, 
 		topPanel.add(portList);
 
 		add(topPanel,BorderLayout.NORTH);
+		
+		CRT_Container = VDSD_CRT_Container.getIstance();
+		
+		VDSD_CRT_Controller controller = new VDSD_CRT_Controller();		
+		controller.setAction(VDSD_CRT_ACTION.LOAD);
+		controller.setDelegate(this);
+		controller.execute();
 
 	}
 
-
-	public void processFinish(byte[] output) {
-		String rawbarcode = VDSD_Utils.encodeHexString(output);
-
+	@Override
+	public void processFinishCRT(VDSD_CRT_Map output) {
+		CRT_Container.setCERTS(output);
+		System.out.println("CRT_MAP LOADED");
+		
+		
+	}
+	
+	@Override
+	public void processFinishScannerListener(byte[] output) {
+		
+		VDSD_ByteStringDecoder decoder = new  VDSD_ByteStringDecoder(output);
+		VDSD_Barcode barcode = decoder.decode();
+		VDSD_Barcode_View viewBarcode = new VDSD_Barcode_View(barcode);
+		viewBarcode.setVisible(true);
 	}
 
 
@@ -111,4 +132,14 @@ public class VDSD_Main extends JFrame implements VDSD_ScannerListener_Delegate, 
 
 		}	
 	}
+
+
+	@Override
+	public void processFinishCRL(VDSD_CRL_Map output) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 }

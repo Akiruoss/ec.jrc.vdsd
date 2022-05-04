@@ -14,7 +14,7 @@ public class VDSD_ScannerListener  implements SerialPortDataListener{
 		byte[] buffer = new byte[event.getSerialPort().bytesAvailable()];
         event.getSerialPort().readBytes(buffer, buffer.length);
         
-        delegate.processFinish(buffer);
+        delegate.processFinishScannerListener(buffer);
 	}
 
 }

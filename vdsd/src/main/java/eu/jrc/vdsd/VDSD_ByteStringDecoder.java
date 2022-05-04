@@ -1,6 +1,8 @@
 package eu.jrc.vdsd;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 
 public class VDSD_ByteStringDecoder 
@@ -8,14 +10,12 @@ public class VDSD_ByteStringDecoder
 
 
 	String rawbarcode;
+	byte[] bcodeByte;
 	public VDSD_ByteStringDecoder(byte[] _bcodeByte)
 	{
+		bcodeByte = _bcodeByte;
 		rawbarcode = VDSD_Utils.encodeHexString(_bcodeByte);
-	}
-
-	public VDSD_ByteStringDecoder(String _rawbarcode)
-	{
-		rawbarcode = _rawbarcode;
+		rawbarcode = rawbarcode.substring(0, rawbarcode.length()-2);
 	}
 
 	VDSD_Barcode decode()
@@ -23,7 +23,7 @@ public class VDSD_ByteStringDecoder
 		VDSD_Barcode barcode =  new VDSD_Barcode();
 		long startTime = System.nanoTime();
 		try {
-
+			barcode.latinBarcode = new String(bcodeByte, StandardCharsets.ISO_8859_1);
 			barcode.rawBarcode = rawbarcode;
 
 			int messageStart = 0;
@@ -346,14 +346,15 @@ public class VDSD_ByteStringDecoder
 
 					barcode.isValid = true;
 					long dbStartTime = System.nanoTime();
-/*					
-					VDSD_DBHelper db = VDSD_DBHelper.getIstance();
-
+					
+					VDSD_CRT_Container CRT_HashMap = VDSD_CRT_Container.getIstance();
+					VDSD_CRT_Map CRT = CRT_HashMap.getCERTS();
+					
 					//NORMAL CODE
 					if (barcode.hex_dec == 0)
 					{
-						BigInteger bigInt = new BigInteger(serial, 16);
-						serial = bigInt.toString();
+						//BigInteger bigInt = new BigInteger(serial, 16);
+						//serial = bigInt.toString();
 						if (header.Version.equalsIgnoreCase("3") && !barcode.header.CertificateAuthorityAndReference.substring(4).equalsIgnoreCase(serial))
 						{
 							barcode.isValid = false;
@@ -362,7 +363,7 @@ public class VDSD_ByteStringDecoder
 						}
 
 					}
-					String certFile = db.getCert(c, cn, serial);
+					String certFile = CRT.getCert(c, cn, serial);
 					if (header.Version.equalsIgnoreCase("4") && certFile == null)
 					{
 						barcode.isValid = false;
@@ -378,12 +379,12 @@ public class VDSD_ByteStringDecoder
 						VDSD_Cert cert = VDSD_Utils.loadCertificate(certFile);
 						String str = cert.x509Cert.getSigAlgName();
 						PublicKey publicKey = cert.x509Cert.getPublicKey();
-
+						/*
 						String crl64 =  db.getCRL(cert.issuerC, cert.issuerCN);
 
 						if (crl64 != null)
 							barcode.isRevoked = VDSD_Utils.loadCRL(crl64).isRevoked(cert.x509Cert);
-
+*/
 
 
 						barcode.isVerified = VDSD_Utils.isValidSignaturePublicKey(publicKey, barcode.getMessage(endOfHeaderMessage), barcode.signature.toDerFormat());
@@ -401,7 +402,7 @@ public class VDSD_ByteStringDecoder
 					
 					long certEndTime = System.nanoTime();
 					barcode.signatureVerification = (certEndTime - certStartTime);
-*/
+
 					//END NORMAL CODE
 
 				} else {

@@ -1,5 +1,5 @@
 package eu.jrc.vdsd;
 
 public interface VDSD_CRT_Delegate {
-	void processFinish(byte[] output);
+	void processFinishCRT(VDSD_CRT_Map output);
 }

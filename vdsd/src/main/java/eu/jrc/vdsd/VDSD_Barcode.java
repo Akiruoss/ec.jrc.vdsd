@@ -5,8 +5,8 @@ public class VDSD_Barcode {
     public VDSD_Barcode_Message message = new VDSD_Barcode_Message();
     public VDSD_Barcode_Signature signature = new VDSD_Barcode_Signature();
     public VDSD_Barcode_Certificate certificate = new VDSD_Barcode_Certificate();
-    public String rawBarcode;
-    public String latinBarcode;
+    public String rawBarcode = "";
+    public String latinBarcode = "";
     public boolean isValid;
     public boolean isRevoked;
     public boolean isSupported = false;
@@ -19,4 +19,8 @@ public class VDSD_Barcode {
     public long readTime = 0;
     public String error = "None";
 
+    String getMessage(int end)
+    {
+        return rawBarcode.substring(0,end);
+    }
 }
