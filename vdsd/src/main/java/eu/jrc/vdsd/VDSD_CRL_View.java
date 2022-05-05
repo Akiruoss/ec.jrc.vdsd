@@ -18,10 +18,15 @@ import eu.jrc.vdsd.VDSD_CRT_Controller.VDSD_CRT_ACTION;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Map.Entry;
 
 public class VDSD_CRL_View extends JFrame implements ActionListener, VDSD_CRL_Delegate{
 
+	VDSD_CRL_Container CRL_Container;
+
 	public VDSD_CRL_View() {
+		
+		CRL_Container = VDSD_CRL_Container.getIstance();
 		
 		getContentPane().setLayout(null);
 		setBounds(10, 80, 800, 730);
@@ -52,6 +57,21 @@ public class VDSD_CRL_View extends JFrame implements ActionListener, VDSD_CRL_De
 		btnDelCertFile.addActionListener(this);
 		btnDelCertFile.setActionCommand("del");
 		menuBar.add(btnDelCertFile);
+
+		VDSD_CRL_Map CRLs = CRL_Container.getCRLs();
+
+		if (CRLs != null) {
+			for (String CA : CRLs.getAllC())
+			{
+				for (Entry<String, String> CRL : CRLs.getAllCRL(CA))
+				{
+					VDSD_CRL_Layout certLayout = new VDSD_CRL_Layout(CA, CRL.getKey(), CRL.getValue());
+					certPanel.add(certLayout);
+					certInfoArea.setText(CRL.getValue());
+				}
+			}
+		}
+
 	}
 
 	@Override
@@ -94,7 +114,8 @@ public class VDSD_CRL_View extends JFrame implements ActionListener, VDSD_CRL_De
 
 	@Override
 	public void processFinishCRL(VDSD_CRL_Map output) {
-		// TODO Auto-generated method stub
-		
+		CRL_Container.setCRLs(output);
+		System.out.println("CRL_MAP LOADED");
+
 	}
 }

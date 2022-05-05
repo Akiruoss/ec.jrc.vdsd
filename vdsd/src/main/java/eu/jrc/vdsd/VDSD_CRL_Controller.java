@@ -92,7 +92,7 @@ public class VDSD_CRL_Controller  extends SwingWorker<VDSD_CRL_Map, String> {
 				ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
 				objectOut.writeObject(CRL_MAP);
 				objectOut.flush();
-				System.out.println("CRT_MAP Saved");
+				System.out.println("CRL_MAP Saved");
 
 			} catch (Exception ex) {
 				ex.printStackTrace();

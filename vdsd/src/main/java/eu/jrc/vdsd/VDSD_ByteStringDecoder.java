@@ -350,6 +350,9 @@ public class VDSD_ByteStringDecoder
 					VDSD_CRT_Container CRT_HashMap = VDSD_CRT_Container.getIstance();
 					VDSD_CRT_Map CRT = CRT_HashMap.getCERTS();
 					
+					VDSD_CRL_Container CRL_HashMap = VDSD_CRL_Container.getIstance();
+					VDSD_CRL_Map CRL = CRL_HashMap.getCRLs();
+					
 					//NORMAL CODE
 					if (barcode.hex_dec == 0)
 					{
@@ -379,12 +382,12 @@ public class VDSD_ByteStringDecoder
 						VDSD_Cert cert = VDSD_Utils.loadCertificate(certFile);
 						String str = cert.x509Cert.getSigAlgName();
 						PublicKey publicKey = cert.x509Cert.getPublicKey();
-						/*
-						String crl64 =  db.getCRL(cert.issuerC, cert.issuerCN);
+						
+						String crl64 =  CRL.getCRL(cert.issuerC, cert.issuerCN);
 
 						if (crl64 != null)
 							barcode.isRevoked = VDSD_Utils.loadCRL(crl64).isRevoked(cert.x509Cert);
-*/
+
 
 
 						barcode.isVerified = VDSD_Utils.isValidSignaturePublicKey(publicKey, barcode.getMessage(endOfHeaderMessage), barcode.signature.toDerFormat());

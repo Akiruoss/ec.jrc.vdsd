@@ -9,12 +9,12 @@ public class VDSD_CRL_Container implements Serializable{
 	private VDSD_CRL_Map CRLs;
 
 
-	public void setCERTS(VDSD_CRL_Map cRLS) {
+	public void setCRLs(VDSD_CRL_Map cRLS) {
 		CRLs = cRLS;
 	}
 
 
-	public VDSD_CRL_Map getCERTS() {
+	public VDSD_CRL_Map getCRLs() {
 		return CRLs;
 	}
 

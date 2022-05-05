@@ -28,10 +28,6 @@ public class VDSD_CRT_Layout extends JPanel{
 
 	VDSD_CRT_Layout(String C, String CN, String Serial, String base64)
 	{
-		setLayout(null);
-		JLabel lblNewLabel = new JLabel("New label");
-		add(lblNewLabel);
-		
 		JLabel lblC = new JLabel("C:");
 		lblC.setBounds(10, 10, 30, 20);
 		add(lblC);

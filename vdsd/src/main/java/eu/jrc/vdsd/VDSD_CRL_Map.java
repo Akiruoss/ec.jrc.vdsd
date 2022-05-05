@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-public class VDSD_CRL_Map extends TreeMap<String, TreeMap<String, TreeMap<String, String>>> implements Serializable 
+public class VDSD_CRL_Map extends TreeMap<String, TreeMap<String, String>> implements Serializable 
 {
 	public List<String> getAllC()
 	{
@@ -26,63 +26,42 @@ public class VDSD_CRL_Map extends TreeMap<String, TreeMap<String, TreeMap<String
 		return cna;
 	}
 
-	public List<Entry<String, String>> getAllCert(String C, String CN)
+	public List<Entry<String, String>> getAllCRL(String C)
 	{
-		List<Entry<String, String>> cna = new ArrayList<>();		
-		for (String s : get(C).get(CN).keySet())
-		{
-			Entry<String, String> ent = Map.entry(s,get(C).get(CN).get(s));
-			cna.add(ent);
-		}				
+		List<Entry<String, String>> cna = new ArrayList<>();	
+		for (String s : get(C).keySet())		
+			cna.add(Map.entry(s,get(C).get(s)));	
+						
 		return cna;
 	}
 
-	public TreeMap<String, TreeMap<String, String>> getC(String C)
+	public TreeMap<String, String> getC(String C)
 	{
 		return get(C);
-	}
-
-	public TreeMap<String, String> getCN(String C, String CN)
-	{
-		return get(C).get(CN);
 	}
 
 	void addCRL(X509CRL _crl) 
 	{
 		VDSD_CRL crl = new VDSD_CRL(_crl);
-		addCRL(crl.C, crl.CN, crl.serial, crl.base64);		
+		addCRL(crl.C, crl.CN, crl.base64);		
 	}
 
-	String getCert(String _C, String _CN, String _Serial) 
-	{
-		TreeMap<String, TreeMap<String, String>> C = get(_C); 
-		TreeMap<String, String> CN = C.get(_CN);
-		String Serial = CN.get(_Serial);
-		return Serial;			
+	String getCRL(String _C, String _CN) 
+	{		
+		TreeMap<String, String> C = get(_C); 
+		String CRL = C.get(_CN);
+		return CRL;			
 	}
 
-	void addCRL(String C, String CN, String Serial, String crl) 
+	void addCRL(String C, String CN, String crl) 
 	{
 
-		if (get(C) != null) 
-		{ 			
-			if (get(C).get(CN) != null) 
-			{						
-				get(C).get(CN).putIfAbsent(Serial, crl);
-			}
-			else
-			{					
-				TreeMap<String, String> hCN = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-				hCN.put(Serial,crl);
-				get(C).put(CN,hCN);				
-			}
-		}
+		if (get(C) != null)  			
+			get(C).put(CN, crl);		
 		else
 		{
-			TreeMap<String, TreeMap<String, String>> hC = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-			TreeMap<String, String> hCN = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-			hCN.put(Serial,crl);
-			hC.put(CN,hCN);
+			TreeMap<String, String> hC = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);						
+			hC.put(CN,crl);
 			put(C, hC);
 		}
 

@@ -12,8 +12,10 @@ import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidKeySpecException;
@@ -198,6 +200,15 @@ public class VDSD_Utils {
             bytes[i / 2] = hexToByte(hexString.substring(i, i + 2));
         }
         return bytes;
+    }
+
+    static X509CRL loadCRL(String txtCRL) throws CertificateException, CRLException 
+    {
+    	txtCRL = txtCRL.startsWith("-----BEGIN X509 CRL-----\n") ? txtCRL : "-----BEGIN X509 CRL-----\n" + txtCRL;
+    	txtCRL = txtCRL.endsWith("-----END X509 CRL-----") ? txtCRL : txtCRL + "\n-----END X509 CRL-----";
+        CertificateFactory cf = CertificateFactory.getInstance("X.509", new BouncyCastleProvider());
+        InputStream txtCRLStream = new ByteArrayInputStream(txtCRL.getBytes());
+        return (X509CRL)cf.generateCRL(txtCRLStream);
     }
     
 }
