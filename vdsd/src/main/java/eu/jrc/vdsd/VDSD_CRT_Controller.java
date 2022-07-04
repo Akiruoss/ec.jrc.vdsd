@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URLDecoder;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.ExecutionException;
@@ -63,7 +64,13 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 	{			
 
 
-		String appPath = VDSD_Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		String appPath = VDSD_CRT_Controller.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		String decodedAppPath = URLDecoder.decode(appPath, "UTF-8");
+		File pathFile = new File(decodedAppPath);
+		
+		if (pathFile.isFile())			
+			decodedAppPath = pathFile.getParent();   
+				
 		String crt_mapFilename = "VDS_CRT_MAP.dat";
 		VDSD_CRT_Map CRT_MAP = new VDSD_CRT_Map();
 
@@ -88,7 +95,7 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 			}
 			try {
 
-				FileOutputStream fileOut = new FileOutputStream(appPath + File.separator + crt_mapFilename);
+				FileOutputStream fileOut = new FileOutputStream(decodedAppPath + File.separator + crt_mapFilename);
 				ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
 				objectOut.writeObject(CRT_MAP);
 				objectOut.flush();
@@ -104,10 +111,10 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 			if (delegate == null)			
 				return null;
 
-			File f = new File(appPath + File.separator + crt_mapFilename);
+			File f = new File(decodedAppPath + File.separator + crt_mapFilename);
 			if (f.exists())
 			{
-				File fileCRT = new File(appPath + File.separator + crt_mapFilename);
+				File fileCRT = new File(decodedAppPath + File.separator + crt_mapFilename);
 				fileCRT.delete();
 				if (fileCRT.delete()) { 
 					System.out.println("Deleted the file: " + fileCRT.getName());
@@ -122,10 +129,10 @@ public class VDSD_CRT_Controller extends SwingWorker<VDSD_CRT_Map, String>{
 		{
 			if (delegate == null)			
 				return null;
-			File f = new File(appPath + File.separator + crt_mapFilename);
+			File f = new File(decodedAppPath + File.separator + crt_mapFilename);
 			if (f.exists())
 			{
-				FileInputStream file = new FileInputStream(appPath + File.separator + crt_mapFilename);
+				FileInputStream file = new FileInputStream(decodedAppPath + File.separator + crt_mapFilename);
 				ObjectInputStream in = new ObjectInputStream(file);             
 				CRT_MAP = (VDSD_CRT_Map)in.readObject();              
 				in.close();

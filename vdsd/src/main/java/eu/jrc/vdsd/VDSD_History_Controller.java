@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 
 import javax.swing.SwingWorker;
 
@@ -37,9 +38,15 @@ public class VDSD_History_Controller extends SwingWorker<String, String>
 	@Override
 	protected String doInBackground() throws Exception 
 	{
-		String appPath = VDSD_Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		String appPath = VDSD_CRT_Controller.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		String decodedAppPath = URLDecoder.decode(appPath, "UTF-8");
+		File pathFile = new File(decodedAppPath);
+		
+		if (pathFile.isFile())			
+			decodedAppPath = pathFile.getParent(); 
+		
 		String historyFilename = "VDS_History_CSV.csv";
-		File historySaveFile = new File(appPath + File.separator + historyFilename);
+		File historySaveFile = new File(decodedAppPath + File.separator + historyFilename);
 		if (ACTION == VDSD_History_ACTION.CREATE)
 		{
 			if (!historySaveFile.exists() || historySaveFile.isDirectory())

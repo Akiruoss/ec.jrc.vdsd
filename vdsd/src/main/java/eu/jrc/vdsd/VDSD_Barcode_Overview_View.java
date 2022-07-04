@@ -82,11 +82,21 @@ public class VDSD_Barcode_Overview_View extends JPanel
 		
 		setBounds(10, 80, 600, 500);
 	
-		JLabel txtName = new JLabel(_barcode.message.MRZ.Name);		
+		String mrz_r1 = _barcode.message.MRZ == null ? "" : _barcode.message.MRZ.MRZ_1r;
+		String mrz_r2 = _barcode.message.MRZ == null ? "" : _barcode.message.MRZ.MRZ_2r;
+		String mrz_name = _barcode.message.MRZ == null ? "" : _barcode.message.MRZ.Name;  
+		String mrz_surname = _barcode.message.MRZ == null ? "" : _barcode.message.MRZ.Surname;
+		String mrz_pass_visa_no = _barcode.message.MRZ == null ? "" : _barcode.message.MRZ.Pass_Visa_No;
+		String mrz_date_visa_expiry = _barcode.message.MRZ == null ? "" : _barcode.message.MRZ.getDateOfVisaExpiry();
+		String mrz_duration_stay = _barcode.message.DurationOfStay == null ? "" :_barcode.message.DurationOfStay.getDate();
+		
+		
+		
+		JLabel txtName = new JLabel(mrz_name);		
 		txtName.setBounds(170, 80, 300, 20);
 		add(txtName);
 		
-		JLabel txtSurname = new JLabel(_barcode.message.MRZ.Surname);
+		JLabel txtSurname = new JLabel(mrz_surname);
 		txtSurname.setBounds(170, 110, 300, 20);
 		add(txtSurname);
 		
@@ -95,7 +105,7 @@ public class VDSD_Barcode_Overview_View extends JPanel
 		txtPassportNumber.setBounds(170, 140, 300, 20);
 		add(txtPassportNumber);
 		
-		JLabel txtDocumentNumber = new JLabel(_barcode.message.MRZ.Pass_Visa_No);		
+		JLabel txtDocumentNumber = new JLabel(mrz_pass_visa_no);		
 		txtDocumentNumber.setBounds(170, 170, 300, 20);
 		add(txtDocumentNumber);
 		
@@ -107,7 +117,7 @@ public class VDSD_Barcode_Overview_View extends JPanel
 		txtDocumentIssueDate.setBounds(170, 230, 300, 20);
 		add(txtDocumentIssueDate);
 		
-		JLabel txtValidUntil = new JLabel(_barcode.message.MRZ.getDateOfVisaExpiry());		
+		JLabel txtValidUntil = new JLabel(mrz_date_visa_expiry);		
 		txtValidUntil.setBounds(170, 260, 300, 20);
 		add(txtValidUntil);
 		
@@ -116,15 +126,15 @@ public class VDSD_Barcode_Overview_View extends JPanel
 		txtNOfEntries.setBounds(170, 290, 300, 20);
 		add(txtNOfEntries);
 		
-		JLabel txtDurationOfStay = new JLabel(_barcode.message.DurationOfStay.getDate());		
+		JLabel txtDurationOfStay = new JLabel(mrz_duration_stay);		
 		txtDurationOfStay.setBounds(170, 320, 300, 20);
 		add(txtDurationOfStay);
 		
-		JLabel lblMRZ1 = new JLabel(_barcode.message.MRZ.MRZ_1r);
+		JLabel lblMRZ1 = new JLabel(mrz_r1);
 		lblMRZ1.setBounds(20, 0, 400, 20);
 		add(lblMRZ1);
 		
-		JLabel lblMRZ2 = new JLabel(_barcode.message.MRZ.MRZ_2r);
+		JLabel lblMRZ2 = new JLabel(mrz_r2);
 		lblMRZ2.setBounds(20, 20, 400, 20);
 		add(lblMRZ2);
 		

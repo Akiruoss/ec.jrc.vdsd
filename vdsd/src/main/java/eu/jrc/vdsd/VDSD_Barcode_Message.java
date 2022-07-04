@@ -1,11 +1,11 @@
 package eu.jrc.vdsd;
 
 public class VDSD_Barcode_Message {
-    public String nOfEntries;
+    public String nOfEntries = "";
     DurationOfStay DurationOfStay;
-    public String PassportNumber ;
-    String VisaType;
-    String Other;
+    public String PassportNumber = "" ;
+    String VisaType = "";
+    String Other = "";
     VDSD_MRZ MRZ;
 
 

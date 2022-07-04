@@ -64,7 +64,7 @@ public class VDSD_CRT_Map extends TreeMap<String, TreeMap<String, TreeMap<String
 
 	void addCRT(String C, String CN, String Serial, String cert) 
 	{
-
+		Serial = Serial.replace(":", "");
 		if (get(C) != null) 
 		{ 			
 			if (get(C).get(CN) != null) 

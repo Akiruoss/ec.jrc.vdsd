@@ -162,6 +162,7 @@ public class VDSD_Main extends JFrame implements VDSD_ScannerListener_Delegate, 
 	@Override
 	public void processFinishScannerListener(byte[] output) 
 	{
+		System.out.println(VDSD_Utils.encodeHexString(output));
 		readTime = (System.nanoTime() - startTime);
 		
 		VDSD_ByteStringDecoder decoder = new  VDSD_ByteStringDecoder(output);

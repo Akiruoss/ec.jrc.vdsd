@@ -23,7 +23,7 @@ public class VDSD_ByteStringDecoder
 		VDSD_Barcode barcode =  new VDSD_Barcode();
 		long startTime = System.nanoTime();
 		try {
-			barcode.latinBarcode = new String(bcodeByte, StandardCharsets.ISO_8859_1);
+			barcode.latinBarcode = new String(bcodeByte);
 			barcode.rawBarcode = rawbarcode;
 
 			int messageStart = 0;
@@ -383,10 +383,10 @@ public class VDSD_ByteStringDecoder
 						String str = cert.x509Cert.getSigAlgName();
 						PublicKey publicKey = cert.x509Cert.getPublicKey();
 						
-						String crl64 =  CRL.getCRL(cert.issuerC, cert.issuerCN);
+						//String crl64 =  CRL.getCRL(cert.issuerC, cert.issuerCN);
 
-						if (crl64 != null)
-							barcode.isRevoked = VDSD_Utils.loadCRL(crl64).isRevoked(cert.x509Cert);
+						//if (crl64 != null)
+						//	barcode.isRevoked = VDSD_Utils.loadCRL(crl64).isRevoked(cert.x509Cert);
 
 
 
